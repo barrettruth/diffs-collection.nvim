@@ -31,8 +31,8 @@ vim.pack.add({
 
 ## Configuration
 
-Components are opt-in. Define a component's `vim.g.diffs_*` table before loading
-diffs-collection.nvim. No `setup()` call is needed.
+Define a component's `vim.g.diffs_*` table before loading the plugin to enable it.
+No `setup()` call is needed.
 
 ### diffs-diff
 
