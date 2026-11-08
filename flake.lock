@@ -1,0 +1,61 @@
+{
+  "nodes": {
+    "diffs-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1794172687,
+        "narHash": "sha256-58/5qQLAoYdbxFMcBD2S7kAgwNv9mrFkFTwsjsM66Dw=",
+        "owner": "barrettruth",
+        "repo": "diffs.nvim",
+        "rev": "b2be4006432237329b0bfe8091406d70c20fd2e6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "barrettruth",
+        "repo": "diffs.nvim",
+        "rev": "b2be4006432237329b0bfe8091406d70c20fd2e6",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1776329215,
+        "narHash": "sha256-a8BYi3mzoJ/AcJP8UldOx8emoPRLeWqALZWu4ZvjPXw=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "b86751bc4085f48661017fa226dee99fab6c651b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "diffs-src": "diffs-src",
+        "nixpkgs": "nixpkgs",
+        "systems": "systems"
+      }
+    },
+    "systems": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}

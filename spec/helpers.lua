@@ -1,0 +1,49 @@
+local core_path = vim.env.DIFFS_NVIM_PATH
+assert(core_path and core_path ~= '', 'Run project commands with nix develop.')
+vim.opt.loadplugins = false
+vim.opt.runtimepath:prepend(core_path)
+vim.opt.runtimepath:prepend(vim.fn.getcwd())
+vim.opt.packpath = {}
+vim.cmd('filetype on')
+
+local function ensure_parser(lang)
+  local ok = pcall(vim.treesitter.language.inspect, lang)
+  if not ok then
+    error('Treesitter parser for ' .. lang .. ' not available. Neovim 0.10+ bundles lua parser.')
+  end
+end
+
+ensure_parser('lua')
+ensure_parser('vim')
+
+local M = {}
+
+function M.create_buffer(lines)
+  local bufnr = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines or {})
+  return bufnr
+end
+
+function M.delete_buffer(bufnr)
+  if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
+    vim.api.nvim_buf_delete(bufnr, { force = true })
+  end
+end
+
+function M.get_extmarks(bufnr, ns)
+  return vim.api.nvim_buf_get_extmarks(bufnr, ns, 0, -1, { details = true })
+end
+
+function M.has_keymap(bufnr, lhs, mode)
+  return M.get_keymap(bufnr, lhs, mode) ~= nil
+end
+
+function M.get_keymap(bufnr, lhs, mode)
+  for _, keymap in ipairs(vim.api.nvim_buf_get_keymap(bufnr, mode or 'n')) do
+    if keymap.lhs == lhs then
+      return keymap
+    end
+  end
+end
+
+return M
