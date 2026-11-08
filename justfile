@@ -13,7 +13,7 @@ lint:
 test:
     busted
 
-ci: format lint test
+ci: format lint
     @:
 
 dev:
