@@ -9,7 +9,7 @@ File comparisons, repository review, and conflict resolution for
 | [diffs-review](#diffs-review) | Repository review with `:Review` |
 | [diffs-conflict](#diffs-conflict) | Conflict highlighting and resolution |
 
-<img width="640" alt="diffs-collection.nvim preview" src="https://github.com/user-attachments/assets/fb67f1f5-e64b-4b67-88f4-2d8d37d9f9f2" />
+<img width="1722" height="1033" alt="image" src="https://github.com/user-attachments/assets/695562f2-4f48-409b-8259-d5e666dad66e" />
 
 ## Installation
 
