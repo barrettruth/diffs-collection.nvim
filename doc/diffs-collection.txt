@@ -1,0 +1,42 @@
+*diffs-collection.txt*  Comparisons, repository review, and conflict resolution
+
+DEVELOPMENT                                 *diffs-collection-development*
+
+This prototype depends on the current diffs.nvim Lua modules. Its legacy plugin
+loader also registers comparison commands, reload callbacks, and conflict
+handlers. Do not load both plugin entry points.
+
+Use the development launcher from the collection checkout: >sh
+    nix develop -c just dev
+<
+It disables automatic plugin loading and loads the collection entry point with
+the pinned core Lua modules available.
+
+COMMANDS                                    *diffs-collection-commands*
+
+:Diff [++layout=unified|stacked|split] [object]
+    Compare the current file with the index or a Git object. The current buffer
+    includes unsaved edits. Supported objects include revisions, rev:path, index
+    paths, and merge stages :1:%, :2:%, and :3:%.
+
+:Diff files [++layout=unified|stacked] [left] [right]
+    Compare two files. An omitted right side uses the current buffer. If both
+    paths are omitted, compare the last save with the current buffer. Escape
+    spaces in explicit paths with a backslash.
+
+:Review [++layout=unified|stacked|split] [++nountracked] [base]
+    Review repository changes. A base-only review includes branch, staged,
+    unstaged, and optional untracked changes. A..B compares endpoints directly.
+    A...B compares B with the merge base. A B is a direct comparison.
+
+CONFIGURATION                               *diffs-collection-config*
+
+Components are enabled by default. Define configuration before plugin loading: >lua
+    vim.g.diffs_diff = { default_layout = 'unified', difftastic = false }
+    vim.g.diffs_review = { layout = 'unified' }
+    vim.g.diffs_conflict = false
+<
+False disables a component. An empty table enables its defaults. Core syntax and
+intra-line highlighting remain configured through vim.g.diffs.
+
+ vim:tw=78:ts=8:noet:ft=help:norl:
