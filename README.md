@@ -29,6 +29,8 @@ vim.pack.add({
 
 ## Configuration
 
+Enable plugins as follows; disable with `vim.g.diffs_<plugin> = false`.
+
 ### diffs-diff
 
 Compare files, buffers, and Git objects with `:Diff`. Defaults:
@@ -40,10 +42,7 @@ vim.g.diffs_diff = {
 }
 ```
 
-Difftastic requires the `difft` executable. Its optional `args` list defaults to
-`{}`. Set `vim.g.diffs_diff = false` to disable `:Diff`.
-
-See `:help g:diffs_diff`.
+See `:help g:diffs_diff` for more information.
 
 ### diffs-review
 
@@ -55,9 +54,7 @@ vim.g.diffs_review = {
 }
 ```
 
-Set `vim.g.diffs_review = false` to disable `:Review`.
-
-See `:help g:diffs_review`.
+See `:help g:diffs_review` for more information.
 
 ### diffs-conflict
 
@@ -67,10 +64,7 @@ Highlight and resolve conflict markers in the working buffer. Default:
 vim.g.diffs_conflict = {}
 ```
 
-The empty table enables conflict handling. There are no additional options.
-Set `vim.g.diffs_conflict = false` to disable automatic detection and mappings.
-
-See `:help g:diffs_conflict`.
+See `:help g:diffs_conflict` for more information.
 
 ## Hunk actions
 
