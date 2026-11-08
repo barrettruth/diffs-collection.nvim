@@ -10,9 +10,14 @@ local function filetype(filename, repo_root)
     return nil
   end
   local path = repo_root and vim.fs.joinpath(repo_root, filename) or filename
-  local buffer = vim.fn.bufnr(path)
-  if buffer ~= -1 and vim.bo[buffer].filetype ~= '' then
-    return vim.bo[buffer].filetype
+  local absolute_path = vim.fn.resolve(vim.fn.fnamemodify(path, ':p'))
+  for _, buffer in ipairs(vim.api.nvim_list_bufs()) do
+    if
+      vim.fn.resolve(vim.api.nvim_buf_get_name(buffer)) == absolute_path
+      and vim.bo[buffer].filetype ~= ''
+    then
+      return vim.bo[buffer].filetype
+    end
   end
   local ft = vim.filetype.match({ filename = path })
   if not ft and vim.fn.filereadable(path) == 1 then

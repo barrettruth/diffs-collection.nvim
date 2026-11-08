@@ -3,6 +3,9 @@ local M = {}
 ---@param bufnr? integer
 function M.attach(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
+  if not vim.api.nvim_buf_is_valid(bufnr) then
+    return
+  end
   local generated = require('diffs-collection.generated.highlight')
   if vim.b[bufnr].diffs_rail_width ~= nil then
     require('diffs').attach(bufnr, {
