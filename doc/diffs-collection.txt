@@ -4,8 +4,7 @@
 INSTALLATION                                *diffs-collection-installation*
 
 Install both plugins. Load diffs.nvim before diffs-collection.nvim.
-The collection requires diffs.nvim's public highlighting API, available on its
-integration/collection branch. Core highlighting uses vim.g.diffs.
+Core highlighting uses vim.g.diffs.
 
 COMPONENTS                                  *diffs-collection-components*
 

@@ -5,7 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     systems.url = "github:nix-systems/default";
     diffs-src = {
-      url = "github:barrettruth/diffs.nvim/25d8e033a2ba95fdfa4be4d1574e9cb3e1ea8774";
+      url = "github:barrettruth/diffs.nvim/9c408315f1ae70c26e21541df6e216b8946fe46e";
       flake = false;
     };
   };
