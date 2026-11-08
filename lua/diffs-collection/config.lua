@@ -14,7 +14,7 @@ end
 
 ---@return table|false
 function M.get_diff()
-  return component('diffs_diff', { default_layout = 'unified', difftastic = false })
+  return component('diffs_diff', { layout = 'unified', difftastic = false })
 end
 
 ---@return table|false

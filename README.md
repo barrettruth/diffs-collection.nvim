@@ -37,13 +37,15 @@ Compare files, buffers, and Git objects with `:Diff`. Defaults:
 
 ```lua
 vim.g.diffs_diff = {
-  default_layout = 'unified', -- 'unified', 'stacked', or 'split'
+  layout = 'unified', -- 'unified', 'stacked', or 'split'
   difftastic = false, -- true or { args = {} } to enable Difftastic
 }
 ```
 
 Difftastic requires the `difft` executable. Its optional `args` list defaults to
 `{}`. Set `vim.g.diffs_diff = false` to disable `:Diff`.
+
+See `:help g:diffs_diff`.
 
 ### diffs-review
 
@@ -57,6 +59,8 @@ vim.g.diffs_review = {
 
 Set `vim.g.diffs_review = false` to disable `:Review`.
 
+See `:help g:diffs_review`.
+
 ### diffs-conflict
 
 Highlight and resolve conflict markers in the working buffer. Default:
@@ -67,6 +71,26 @@ vim.g.diffs_conflict = {}
 
 The empty table enables conflict handling. There are no additional options.
 Set `vim.g.diffs_conflict = false` to disable automatic detection and mappings.
+
+See `:help g:diffs_conflict`.
+
+## Hunk actions
+
+In unified and stacked Git comparisons, place the cursor in a hunk:
+
+| Key | Action | Where |
+| --- | --- | --- |
+| `dp` | Stage the hunk | `:Diff` against the index, or the Unstaged section of `:Review` |
+| `do` | Unstage the hunk | The Staged section of `:Review` |
+
+For example, run `:Diff ++layout=unified` and press `dp` to stage the current
+hunk. Use a Visual selection to apply either action to selected lines within
+one hunk. Both actions update the Git index and refresh the view. Working files
+remain unchanged.
+
+These mappings are available in generated Git comparisons with the relevant
+changes. Split views, `:Diff files`, and ordinary patch buffers do not have
+these mappings. See `:help diffs-collection-actions`.
 
 ## Documentation
 
