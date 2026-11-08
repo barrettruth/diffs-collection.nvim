@@ -2,14 +2,6 @@ if vim.g.loaded_diffs_collection then
   return
 end
 
-if vim.g.loaded_diffs then
-  vim.notify(
-    '[diffs-collection]: The prototype requires the diffs core Lua modules without its legacy plugin loader. See :help diffs-collection-development.',
-    vim.log.levels.WARN
-  )
-  return
-end
-
 local config = require('diffs-collection.config')
 local diff_enabled = config.get_diff() ~= false
 local review_enabled = config.get_review() ~= false

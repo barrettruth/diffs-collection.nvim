@@ -38,7 +38,6 @@ function M.apply()
     DiffsConflictOursNr = { fg = ours_fg, bg = ours },
     DiffsConflictTheirsNr = { fg = theirs_fg, bg = theirs },
     DiffsConflictBaseNr = { fg = theirs_fg, bg = base },
-    DiffsConflictDiffOff = {},
   }) do
     attrs.default = true
     vim.api.nvim_set_hl(0, name, attrs)

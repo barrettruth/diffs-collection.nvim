@@ -2466,16 +2466,10 @@ function M.refresh(bufnr)
   end
 end
 
---- React to a runtime change of the global 'diffopt'. Generated diffs:// buffers
---- regenerate (their content honors the whitespace/algorithm flags), attached
---- repaint surfaces are invalidated so whitespace-only lines are re-classified,
---- and native &diff windows are refreshed so they pick up the new options
---- immediately. Deferred so buffer rewrites do not run inside the OptionSet
---- callback, then a redraw flushes the new highlighting.
+--- Regenerate visible comparisons after 'diffopt' changes.
 function M.on_diffopt_changed()
   vim.schedule(function()
     M.refresh_visible()
-    runtime.invalidate_attached()
     pcall(vim.cmd.diffupdate)
     vim.cmd.redraw({ bang = true })
   end)

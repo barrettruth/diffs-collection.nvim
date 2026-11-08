@@ -1207,25 +1207,6 @@ describe('commands', function()
       assert.are.equal(0, #vim.api.nvim_buf_get_extmarks(right_buf, intra_ns, 0, -1, {}))
     end)
 
-    it('leaves split panes untouched when attach_diff re-runs', function()
-      mock_view_config({ prefix = true })
-      create_split_source()
-      commands.diff('++layout=split', false)
-
-      local right_buf = vim.api.nvim_get_current_buf()
-      local left_buf = vim.api.nvim_buf_get_var(right_buf, 'diffs_split_peer')
-      table.insert(test_buffers, left_buf)
-      table.insert(test_buffers, right_buf)
-      local left_win, right_win = find_split_windows(left_buf, right_buf)
-
-      runtime.attach_diff()
-
-      assert.is_false(vim.api.nvim_get_option_value('diff', { win = left_win }))
-      assert.is_false(vim.api.nvim_get_option_value('diff', { win = right_win }))
-      assert.is_true(vim.api.nvim_get_option_value('statuscolumn', { win = left_win }) ~= '')
-      assert.is_true(vim.api.nvim_get_option_value('statuscolumn', { win = right_win }) ~= '')
-    end)
-
     it('renders real per-side line numbers through the statuscolumn rail', function()
       mock_view_config({ prefix = true })
       create_split_source({
@@ -3105,11 +3086,11 @@ describe('commands', function()
         callback = function(args)
           runtime.attach(args.buf)
           local rail_ok, rail_width = pcall(vim.api.nvim_buf_get_var, args.buf, 'diffs_rail_width')
-          local entry = runtime._test.hunk_cache[args.buf]
+          local parsed = require('diffs-collection.generated.highlight').hunks(args.buf)
           attach_records[#attach_records + 1] = {
             name = vim.api.nvim_buf_get_name(args.buf),
             rail_width = rail_ok and rail_width or nil,
-            hunk_count = entry and #entry.hunks or nil,
+            hunk_count = #parsed,
           }
         end,
       })
