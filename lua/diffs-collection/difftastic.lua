@@ -25,6 +25,7 @@ local TIMEOUT_MS = 5000
 ---@param bufnr integer
 function M.mark_active(bufnr)
   pcall(vim.api.nvim_buf_set_var, bufnr, active_var, true)
+  require('diffs-collection.core').attach(bufnr)
 end
 
 ---@param bufnr integer

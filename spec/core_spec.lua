@@ -26,7 +26,7 @@ assert(not vim.tbl_isempty(vim.api.nvim_get_hl(0, { name = 'DiffsAddText' })))
 local ns = vim.api.nvim_get_namespaces().diffs_split_intra
 local marks = vim.api.nvim_buf_get_extmarks(panes.right_buf, ns, 0, -1, {})
 assert(#marks > 0, 'The first split has no intra-line highlights')
-assert(vim.g.loaded_diffs == nil, 'The legacy core plugin loader ran')
+
 ]],
         '\n'
       ),
@@ -36,5 +36,51 @@ assert(vim.g.loaded_diffs == nil, 'The legacy core plugin loader ran')
     local status = vim.v.shell_error
     vim.fn.delete(script)
     assert.are.equal(0, status, output)
+  end)
+
+  it('places generated header context after the rail exactly once', function()
+    local raw = {
+      'diff --git a/test.lua b/test.lua',
+      '@@ -1 +1 @@ function test()',
+      '-local value = 1',
+      '+local value = 2',
+    }
+    local lines, info = require('diffs-collection.rails').annotate(raw)
+    local buf = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+    vim.b[buf].diffs_rail_width = info.prefix_width
+    vim.api.nvim_set_current_buf(buf)
+    require('diffs-collection.core').attach(buf)
+    vim.api.nvim__redraw({ valid = true, flush = true })
+    local ns = vim.api.nvim_get_namespaces()
+    vim.wait(1000, function()
+      for _, mark in ipairs(vim.api.nvim_buf_get_extmarks(buf, ns.diffs, 0, -1, { details = true })) do
+        if
+          mark[2] == 1
+          and mark[3] == info.prefix_width + #'@@ -1 +1 @@ '
+          and mark[4].hl_group == 'DiffsClear'
+        then
+          return true
+        end
+      end
+      return false
+    end, 10)
+    local marks = vim.api.nvim_buf_get_extmarks(buf, ns.diffs, 0, -1, { details = true })
+    local context = false
+    for _, mark in ipairs(marks) do
+      assert.is_true(mark[3] >= info.prefix_width)
+      if
+        mark[2] == 1
+        and mark[3] == info.prefix_width + #'@@ -1 +1 @@ '
+        and mark[4].hl_group == 'DiffsClear'
+      then
+        context = true
+        assert.are.equal(#lines[2], mark[4].end_col)
+      end
+    end
+    assert.is_true(context)
+    local rails = vim.api.nvim_buf_get_extmarks(buf, ns.diffs_collection_rails, 0, -1, {})
+    assert.is_true(#rails > 0)
+    vim.api.nvim_buf_delete(buf, { force = true })
   end)
 end)

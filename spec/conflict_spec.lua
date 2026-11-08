@@ -722,11 +722,14 @@ describe('conflict component windows', function()
   local saved_diff
   local saved_winhighlight
   local saved_config
+  local saved_namespace
+  local existing_namespace
 
   before_each(function()
     saved_diff = vim.wo.diff
     saved_winhighlight = vim.wo.winhighlight
     saved_config = vim.g.diffs_conflict
+    saved_namespace = vim.api.nvim_get_hl_ns({ winid = 0 })
     vim.g.diffs_conflict = {}
     bufnr = create_file_buffer({
       '<<<<<<< HEAD',
@@ -738,6 +741,7 @@ describe('conflict component windows', function()
     vim.api.nvim_set_current_buf(bufnr)
     vim.wo.diff = true
     vim.wo.winhighlight = 'Normal:NormalFloat,DiffAdd:Search'
+    existing_namespace = vim.api.nvim_get_hl_ns({ winid = 0 })
   end)
 
   after_each(function()
@@ -748,18 +752,22 @@ describe('conflict component windows', function()
     vim.wo.diff = saved_diff
     vim.wo.winhighlight = saved_winhighlight
     vim.g.diffs_conflict = saved_config
+    vim.api.nvim_win_set_hl_ns(0, saved_namespace)
   end)
 
   it('restores existing window highlights when the last conflict is resolved', function()
     component.setup()
     assert.is_true(vim.wo.winhighlight:find('Normal:NormalFloat', 1, true) ~= nil)
-    assert.is_true(vim.wo.winhighlight:find('DiffAdd:DiffsConflictDiffOff', 1, true) ~= nil)
+    local namespace = vim.api.nvim_get_hl_ns({ winid = 0 })
+    assert.are_not.equal(saved_namespace, namespace)
+    assert.are.same({}, vim.api.nvim_get_hl(namespace, { name = 'DiffAdd' }))
 
     vim.api.nvim_win_set_cursor(0, { 2, 0 })
     component.resolve_ours()
 
     assert.are.same({ 'ours' }, vim.api.nvim_buf_get_lines(bufnr, 0, -1, false))
     assert.are.equal('Normal:NormalFloat,DiffAdd:Search', vim.wo.winhighlight)
+    assert.are.equal(existing_namespace, vim.api.nvim_get_hl_ns({ winid = 0 }))
   end)
 
   it('preserves a user window highlight change when conflict handling detaches', function()
@@ -769,4 +777,58 @@ describe('conflict component windows', function()
     vim.api.nvim_exec_autocmds('WinEnter', {})
     assert.are.equal('Normal:ErrorMsg', vim.wo.winhighlight)
   end)
+
+  it('preserves an existing namespace and a later user namespace change', function()
+    local previous = vim.api.nvim_create_namespace('conflict_spec_previous')
+    vim.api.nvim_set_hl(previous, 'Normal', { fg = 0x123456 })
+    vim.api.nvim_win_set_hl_ns(0, previous)
+    component.setup()
+    local applied = vim.api.nvim_get_hl_ns({ winid = 0 })
+    assert.are.same({ fg = 0x123456 }, vim.api.nvim_get_hl(applied, { name = 'Normal' }))
+    component.detach(bufnr)
+    assert.are.equal(previous, vim.api.nvim_get_hl_ns({ winid = 0 }))
+
+    component.attach(bufnr)
+    local replacement = vim.api.nvim_create_namespace('conflict_spec_replacement')
+    vim.api.nvim_win_set_hl_ns(0, replacement)
+    component.detach(bufnr)
+    assert.are.equal(replacement, vim.api.nvim_get_hl_ns({ winid = 0 }))
+  end)
+
+  for _, order in ipairs({ 'core-first', 'collection-first' }) do
+    it('composes native diff highlights with ' .. order .. ' loading', function()
+      local loaded = vim.g.loaded_diffs
+      local autocmds = {}
+      for _, autocmd in ipairs(vim.api.nvim_get_autocmds({})) do
+        autocmds[autocmd.id] = true
+      end
+      vim.g.loaded_diffs = nil
+      local function load_core()
+        dofile(vim.env.DIFFS_NVIM_PATH .. '/plugin/diffs.lua')
+        vim.api.nvim_exec_autocmds('VimEnter', {})
+      end
+      if order == 'core-first' then
+        load_core()
+        component.setup()
+      else
+        component.setup()
+        load_core()
+      end
+      local namespace = vim.api.nvim_get_hl_ns({ winid = 0 })
+      assert.are.same({}, vim.api.nvim_get_hl(namespace, { name = 'DiffAdd' }))
+      assert.is_truthy(vim.wo.winhighlight:find('DiffAdd:DiffsDiffAdd', 1, true))
+      vim.api.nvim_win_set_cursor(0, { 2, 0 })
+      component.resolve_ours()
+      assert.are.equal(existing_namespace, vim.api.nvim_get_hl_ns({ winid = 0 }))
+      assert.is_truthy(vim.wo.winhighlight:find('DiffAdd:DiffsDiffAdd', 1, true))
+      local restored = vim.api.nvim_get_hl_ns({ winid = 0 })
+      assert.are.equal('DiffsDiffAdd', vim.api.nvim_get_hl(restored, { name = 'DiffAdd' }).link)
+      for _, autocmd in ipairs(vim.api.nvim_get_autocmds({})) do
+        if not autocmds[autocmd.id] then
+          vim.api.nvim_del_autocmd(autocmd.id)
+        end
+      end
+      vim.g.loaded_diffs = loaded
+    end)
+  end
 end)

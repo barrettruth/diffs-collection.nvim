@@ -3,17 +3,17 @@
     "diffs-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1794172687,
-        "narHash": "sha256-58/5qQLAoYdbxFMcBD2S7kAgwNv9mrFkFTwsjsM66Dw=",
+        "lastModified": 1794175257,
+        "narHash": "sha256-zftf7ncICfwpTyAz92e/KvB1LU4v83Qn+TF8DnWBYjo=",
         "owner": "barrettruth",
         "repo": "diffs.nvim",
-        "rev": "b2be4006432237329b0bfe8091406d70c20fd2e6",
+        "rev": "25d8e033a2ba95fdfa4be4d1574e9cb3e1ea8774",
         "type": "github"
       },
       "original": {
         "owner": "barrettruth",
         "repo": "diffs.nvim",
-        "rev": "b2be4006432237329b0bfe8091406d70c20fd2e6",
+        "rev": "25d8e033a2ba95fdfa4be4d1574e9cb3e1ea8774",
         "type": "github"
       }
     },

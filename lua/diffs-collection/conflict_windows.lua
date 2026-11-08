@@ -2,11 +2,7 @@ local M = {}
 
 local conflict = require('diffs-collection.conflict')
 
-local groups = { DiffAdd = true, DiffDelete = true, DiffChange = true, DiffText = true }
-local override = 'DiffAdd:DiffsConflictDiffOff,DiffDelete:DiffsConflictDiffOff,'
-  .. 'DiffChange:DiffsConflictDiffOff,DiffText:DiffsConflictDiffOff'
-
----@type table<integer, { previous: string, applied: string }>
+---@type table<integer, { previous: integer, applied: integer }>
 local windows = {}
 
 ---@param win integer
@@ -26,8 +22,8 @@ end
 local function restore(win)
   local saved = windows[win]
   if saved and vim.api.nvim_win_is_valid(win) then
-    if vim.wo[win].winhighlight == saved.applied then
-      vim.wo[win].winhighlight = saved.previous
+    if vim.api.nvim_get_hl_ns({ winid = win }) == saved.applied then
+      vim.api.nvim_win_set_hl_ns(win, saved.previous)
     end
   end
   windows[win] = nil
@@ -41,17 +37,23 @@ function M.refresh()
   end
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     if has_conflict(win) and not windows[win] then
-      local previous = vim.wo[win].winhighlight
-      local mappings = {}
-      for mapping in previous:gmatch('[^,]+') do
-        if not groups[mapping:match('^([^:]+):')] then
-          mappings[#mappings + 1] = mapping
+      local previous = vim.api.nvim_get_hl_ns({ winid = win })
+      local applied = vim.api.nvim_create_namespace('')
+      local effective = previous == -1 and vim.api.nvim_get_hl_ns({}) or previous
+      if effective > 0 then
+        for name, definition in pairs(vim.api.nvim_get_hl(effective, {})) do
+          vim.api.nvim_set_hl(applied, name, definition)
+        end
+      else
+        for source, target in vim.wo[win].winhighlight:gmatch('([^:,]+):([^,]+)') do
+          vim.api.nvim_set_hl(applied, source, { link = target })
         end
       end
-      mappings[#mappings + 1] = override
-      local applied = table.concat(mappings, ',')
+      for _, name in ipairs({ 'DiffAdd', 'DiffDelete', 'DiffChange', 'DiffText' }) do
+        vim.api.nvim_set_hl(applied, name, {})
+      end
       windows[win] = { previous = previous, applied = applied }
-      vim.wo[win].winhighlight = applied
+      vim.api.nvim_win_set_hl_ns(win, applied)
     end
   end
 end

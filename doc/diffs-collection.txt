@@ -1,20 +1,30 @@
-*diffs-collection.txt*  Comparisons, repository review, and conflict resolution
+*diffs-collection.txt*  File comparisons, repository review, and conflicts
+*diffs-collection*
 
-DEVELOPMENT                                 *diffs-collection-development*
+INSTALLATION                                *diffs-collection-installation*
 
-This prototype depends on the current diffs.nvim Lua modules. Its legacy plugin
-loader also registers comparison commands, reload callbacks, and conflict
-handlers. Do not load both plugin entry points.
+Install both plugins. Load diffs.nvim before diffs-collection.nvim.
+The collection requires diffs.nvim's public highlighting API, available on its
+integration/collection branch. Core highlighting uses vim.g.diffs.
 
-Use the development launcher from the collection checkout: >sh
-    nix develop -c just dev
+COMPONENTS                                  *diffs-collection-components*
+
+Components are enabled by default. Define configuration before plugin loading: >lua
+    vim.g.diffs_diff = { default_layout = 'unified', difftastic = false }
+    vim.g.diffs_review = { layout = 'unified' }
+    vim.g.diffs_conflict = {}
 <
-It disables automatic plugin loading and loads the collection entry point with
-the pinned core Lua modules available.
+Set a component to false to disable it. An empty table selects its defaults.
+Disabling diffs_diff removes :Diff. Disabling diffs_review removes :Review.
+Disabling diffs_conflict prevents automatic conflict detection and mappings.
 
 COMMANDS                                    *diffs-collection-commands*
 
-:Diff [++layout=unified|stacked|split] [object]
+Layouts: unified shows old and new line-number columns. stacked shows one
+line-number column. Both display the same diff in one buffer. split displays
+the old and new content in separate panes.
+
+:Diff [++layout=unified|stacked|split] [object]              *:Diff*
     Compare the current file with the index or a Git object. The current buffer
     includes unsaved edits. Supported objects include revisions, rev:path, index
     paths, and merge stages :1:%, :2:%, and :3:%.
@@ -24,19 +34,87 @@ COMMANDS                                    *diffs-collection-commands*
     paths are omitted, compare the last save with the current buffer. Escape
     spaces in explicit paths with a backslash.
 
-:Review [++layout=unified|stacked|split] [++nountracked] [base]
+:Review [++layout=unified|stacked|split] [++nountracked] [base]  *:Review*
     Review repository changes. A base-only review includes branch, staged,
     unstaged, and optional untracked changes. A..B compares endpoints directly.
     A...B compares B with the merge base. A B is a direct comparison.
 
 CONFIGURATION                               *diffs-collection-config*
 
-Components are enabled by default. Define configuration before plugin loading: >lua
-    vim.g.diffs_diff = { default_layout = 'unified', difftastic = false }
-    vim.g.diffs_review = { layout = 'unified' }
-    vim.g.diffs_conflict = false
+vim.g.diffs_diff.default_layout
+    Default :Diff layout: 'unified', 'stacked', or 'split'. Default: 'unified'.
+
+vim.g.diffs_diff.difftastic
+    false, true, or { args = { ... } }. Default: false. Requires an installed
+    difft executable. Structural differences use difftastic's intra-line spans.
+
+vim.g.diffs_review.layout
+    Default :Review layout: 'unified', 'stacked', or 'split'. Default: 'unified'.
+
+vim.g.diffs_conflict
+    {} enables conflict detection. false disables it. Configure conflict
+    mappings with vim.keymap.set() and the <Plug> mappings below.
+
+GENERATED VIEWS                              *diffs-collection-views*
+
+CTRL-L refreshes the current generated view from its comparison sources. :edit
+also refreshes it. Named files read disk content. Buffer comparisons retain the
+source buffer, including unsaved edits.
+
+The collection installs dp/do only when generated comparison metadata permits
+put/obtain actions. This includes eligible repository review sections. A patch
+buffer or a third-party buffer receives highlighting without these actions.
+Existing user buffer-local mappings take precedence.
+
+LUA API                                     *diffs-collection-api*
+
+require('diffs-diff')
+    open(object?, opts?)             Open a current-file comparison.
+    files(left?, right?, opts?)      Open an arbitrary file comparison.
+    refresh()                        Refresh the current generated view.
+
+require('diffs-review')
+    open(spec?, opts?)               Open a repository review.
+    files(bufnr?)                    Return review file entries.
+    current(bufnr?)                  Return the current review entry.
+    goto_file(target, bufnr?)        Select a review file.
+    next_file() / prev_file()        Select the next or previous file.
+    toggle_layout(opts?)             Change the review layout.
+    select_file(bufnr?)              Select a file with vim.ui.select().
+
+require('diffs-conflict')
+    attach(bufnr?) / detach(bufnr?)
+    resolve_ours(bufnr?) / resolve_theirs(bufnr?)
+    resolve_both(bufnr?) / resolve_none(bufnr?)
+    goto_next(bufnr?) / goto_prev(bufnr?)
+
+Conflict resolution changes the working buffer without writing it to disk.
+
+MAPPINGS AND EVENTS                          *diffs-collection-mappings*
+
+<Plug>(diffs-diff)                   Open a horizontal comparison.
+<Plug>(diffs-diff-vertical)           Open a vertical comparison.
+<Plug>(diffs-refresh)                Refresh the current generated view.
+<Plug>(diffs-diff-open-source)       Open the worktree source at the cursor.
+<Plug>(diffs-review-toggle-layout)   Toggle the review layout.
+<Plug>(diffs-review-next-file)       Select the next review file.
+<Plug>(diffs-review-prev-file)       Select the previous review file.
+<Plug>(diffs-review-select-file)     Select a review file.
+
+Conflict mappings use <Plug>(diffs-conflict-{action}). Generated merge mappings
+use <Plug>(diffs-merge-{action}). Actions: ours, theirs, both, none, next, prev.
+
+User events: DiffsConflictDetected, DiffsConflictResolved,
+DiffsConflictDetached, and DiffsMergeReady. Conflict colors use the
+DiffsConflictOurs, DiffsConflictTheirs, DiffsConflictBase, and
+DiffsConflictMarker highlight groups.
+
+DEVELOPMENT                                 *diffs-collection-development*
+
+From the collection checkout: >sh
+    nix develop -c just dev
 <
-False disables a component. An empty table enables its defaults. Core syntax and
-intra-line highlighting remain configured through vim.g.diffs.
+The launcher loads diffs.nvim before diffs-collection.nvim. The Nix flake pins
+the core revision.
 
  vim:tw=78:ts=8:noet:ft=help:norl:
