@@ -32,7 +32,7 @@ vim.pack.add({
 ## Configuration
 
 Components are opt-in. Define a component's `vim.g.diffs_*` table before loading
-diffs-collection.nvim. Empty tables enable defaults. No `setup()` call is needed.
+diffs-collection.nvim. No `setup()` call is needed.
 
 ### diffs-diff
 

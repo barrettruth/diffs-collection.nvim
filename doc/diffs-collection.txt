@@ -30,7 +30,7 @@ CONFIGURATION                               *diffs-collection-config*
                                             *diffs-collection-components*
 
 Components are opt-in. Define a component's vim.g.diffs_* table before loading
-the plugin. Empty tables enable defaults. Omit components you do not need.
+the plugin.
 Configure syntax and intra-line highlighting through |g:diffs| in diffs.nvim.
 
 File comparisons                            *g:diffs_diff*
