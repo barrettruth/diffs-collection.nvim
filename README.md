@@ -16,7 +16,9 @@ File comparisons, repository review, and conflict resolution for
 For example, with `vim.pack` (Neovim 0.12+):
 
 **Load diffs.nvim before diffs-collection.nvim and specify configuration before**
-`vim.pack.add()`/your plugin manager loads the plugins. To enable all components:
+`vim.pack`/your plugin manager loads the plugins.
+
+For example, to enable all components:
 
 ```lua
 vim.g.diffs_diff = {}
