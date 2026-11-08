@@ -76,13 +76,12 @@ In unified and stacked Git comparisons, place the cursor in a hunk:
 | `do` | Unstage the hunk | The Staged section of `:Review` |
 
 For example, run `:Diff ++layout=unified` and press `dp` to stage the current
-hunk. Use a Visual selection to apply either action to selected lines within
-one hunk. Both actions update the Git index and refresh the view. Working files
-remain unchanged.
+hunk, which updates the Git index and refreshes the view.
 
-These mappings are available in generated Git comparisons with the relevant
-changes. Split views, `:Diff files`, and ordinary patch buffers do not have
-these mappings. See `:help diffs-collection-actions`.
+Split views, `:Diff files`, and ordinary patch buffers do not have
+these mappings.
+
+See `:help diffs-collection-actions` for more information.
 
 ## Documentation
 
