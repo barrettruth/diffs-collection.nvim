@@ -3,23 +3,25 @@
 File comparisons, repository review, and conflict resolution for
 [diffs.nvim](https://github.com/barrettruth/diffs.nvim).
 
-<img width="863" height="752" alt="image" src="https://github.com/user-attachments/assets/fb67f1f5-e64b-4b67-88f4-2d8d37d9f9f2" />
-
 | Component | Description |
 | --- | --- |
 | [diffs-diff](#diffs-diff) | File and buffer comparisons with `:Diff` |
 | [diffs-review](#diffs-review) | Repository review with `:Review` |
 | [diffs-conflict](#diffs-conflict) | Conflict highlighting and resolution |
 
+<img width="640" alt="diffs-collection.nvim preview" src="https://github.com/user-attachments/assets/fb67f1f5-e64b-4b67-88f4-2d8d37d9f9f2" />
+
 ## Installation
 
 For example, with `vim.pack` (Neovim 0.12+):
 
 **Load diffs.nvim before diffs-collection.nvim and specify configuration before**
-`vim.pack.add()`/your plugin manager loads the plugins. For example:
+`vim.pack.add()`/your plugin manager loads the plugins. To enable all components:
 
 ```lua
+vim.g.diffs_diff = {}
 vim.g.diffs_review = { layout = 'split' }
+vim.g.diffs_conflict = {}
 
 vim.pack.add({
   'https://github.com/barrettruth/diffs.nvim',
@@ -29,11 +31,12 @@ vim.pack.add({
 
 ## Configuration
 
-All plugins are enabled by default. Disable with `vim.g.diffs_<plugin> = false`.
+Components are opt-in. Define a component's `vim.g.diffs_*` table before loading
+diffs-collection.nvim. Empty tables enable defaults. No `setup()` call is needed.
 
 ### diffs-diff
 
-Compare files, buffers, and Git objects with `:Diff`. Defaults:
+Compare files, buffers, and Git objects with `:Diff`. Enable with default settings:
 
 ```lua
 vim.g.diffs_diff = {
@@ -46,7 +49,7 @@ See `:help g:diffs_diff` for more information.
 
 ### diffs-review
 
-Review repository changes with `:Review`. Defaults:
+Review repository changes with `:Review`. Enable with default settings:
 
 ```lua
 vim.g.diffs_review = {
@@ -58,7 +61,7 @@ See `:help g:diffs_review` for more information.
 
 ### diffs-conflict
 
-Highlight and resolve conflict markers in the working buffer. Default:
+Highlight and resolve conflict markers in the working buffer. Enable with:
 
 ```lua
 vim.g.diffs_conflict = {}
