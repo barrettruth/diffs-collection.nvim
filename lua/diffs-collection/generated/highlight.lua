@@ -130,6 +130,7 @@ function M.apply(bufnr)
           priority.syntax + 2
         )
         if opts.highlights.background then
+          mark(0, width, 'Diffs' .. kind, priority.line_bg)
           vim.api.nvim_buf_set_extmark(bufnr, ns, row, 0, {
             virt_text = { { '▏', 'Diffs' .. kind .. 'Bar' } },
             virt_text_pos = 'overlay',
