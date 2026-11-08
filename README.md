@@ -17,10 +17,6 @@ Install both plugins with your package manager of choice.
 
 ## Configuration
 
-Each component has its own `vim.g` table. Components are enabled by default.
-Set a component to `false` before plugin loading to disable it. Empty tables
-select defaults. Configure core highlighting with `vim.g.diffs`.
-
 ### diffs-diff
 
 Compare files, buffers, and Git objects with `:Diff`.
