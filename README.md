@@ -1,28 +1,55 @@
 # diffs-collection.nvim
 
-File comparisons, repository review, and conflict resolution for Neovim.
-[diffs.nvim](https://github.com/barrettruth/diffs.nvim) provides highlighting.
+File comparisons, repository review, and conflict resolution for
+[diffs.nvim](https://github.com/barrettruth/diffs.nvim).
 
-Load **diffs.nvim before diffs-collection.nvim**. Until the November 30, 2026
-switchover, use diffs.nvim's `compare/nov-30-2026` branch.
+| Component | Description |
+| --- | --- |
+| [diffs-diff](#diffs-diff) | File and buffer comparisons with `:Diff` |
+| [diffs-review](#diffs-review) | Repository review with `:Review` |
+| [diffs-conflict](#diffs-conflict) | Conflict highlighting and resolution |
+
+## Installation
+
+Install both plugins with your package manager of choice.
+
+**Load diffs.nvim before diffs-collection.nvim.**
+
+## Configuration
+
+Each component has its own `vim.g` table. Components are enabled by default.
+Set a component to `false` before plugin loading to disable it. Empty tables
+select defaults. Configure core highlighting with `vim.g.diffs`.
+
+### diffs-diff
+
+Compare files, buffers, and Git objects with `:Diff`.
 
 ```lua
--- lazy.nvim
-{
-  'barrettruth/diffs-collection.nvim',
-  dependencies = {
-    { 'barrettruth/diffs.nvim', branch = 'compare/nov-30-2026' },
-  },
+vim.g.diffs_diff = {
+  default_layout = 'unified',
+  difftastic = false,
 }
 ```
 
-All three components are enabled by default. Set a component to `false` before
-plugin loading to disable it. Configure core highlighting with `vim.g.diffs`.
+### diffs-review
+
+Review repository changes with `:Review`.
 
 ```lua
-vim.g.diffs_diff = {}     -- :Diff file comparisons; :help diffs-collection-commands
-vim.g.diffs_review = {}   -- :Review repository changes; :help diffs-collection-commands
-vim.g.diffs_conflict = {} -- Conflict resolution; :help diffs-collection-mappings
+vim.g.diffs_review = { layout = 'unified' }
 ```
 
-See `:help diffs-collection` for configuration, commands, and mappings.
+### diffs-conflict
+
+Highlight and resolve conflict markers in the working buffer.
+
+```lua
+vim.g.diffs_conflict = {}
+```
+
+## Documentation
+
+```vim
+:help diffs-collection
+```

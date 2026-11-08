@@ -4,8 +4,7 @@
 INSTALLATION                                *diffs-collection-installation*
 
 Install both plugins. Load diffs.nvim before diffs-collection.nvim.
-Until the November 30, 2026 switchover, use diffs.nvim's compare/nov-30-2026
-branch. Core highlighting uses vim.g.diffs.
+Core highlighting uses vim.g.diffs.
 
 COMPONENTS                                  *diffs-collection-components*
 
