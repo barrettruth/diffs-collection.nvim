@@ -166,12 +166,4 @@ DiffsConflictDetached, and DiffsMergeReady. Conflict colors use the
 DiffsConflictOurs, DiffsConflictTheirs, DiffsConflictBase, and
 DiffsConflictMarker highlight groups.
 
-DEVELOPMENT                                 *diffs-collection-development*
-
-From the collection checkout: >sh
-    nix develop -c just dev
-<
-The launcher loads diffs.nvim before diffs-collection.nvim. The Nix flake pins
-the core revision.
-
  vim:tw=78:ts=8:noet:ft=help:norl:

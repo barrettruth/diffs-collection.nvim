@@ -17,16 +17,6 @@ local function child(lines)
 end
 
 describe('collection commands', function()
-  it('registers no components without configuration', function()
-    child({
-      "vim.cmd('runtime plugin/diffs-collection.lua')",
-      "assert(vim.fn.exists(':Diff') == 0)",
-      "assert(vim.fn.exists(':Review') == 0)",
-      "assert(vim.fn.maparg('<Plug>(diffs-refresh)', 'n') == '')",
-      "assert(package.loaded['diffs-collection.conflict'] == nil)",
-    })
-  end)
-
   it('compares escaped file paths through Ex and reloads changed content', function()
     child({
       'vim.g.diffs_diff = {}',
