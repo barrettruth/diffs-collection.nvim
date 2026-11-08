@@ -9,7 +9,7 @@ local M = {
 
 ---@return table
 function M.get_view_config()
-  return config.get_diff() or { default_layout = 'unified' }
+  return config.get_diff() or { layout = 'unified' }
 end
 
 ---@return boolean|table

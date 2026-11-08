@@ -1023,7 +1023,7 @@ describe('commands', function()
       vim.o.splitright = false
       local ok, err = pcall(function()
         mock_view_config({
-          default_layout = 'split',
+          layout = 'split',
           prefix = true,
         })
         create_split_source()

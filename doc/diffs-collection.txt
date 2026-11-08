@@ -35,11 +35,11 @@ File comparisons                            *g:diffs_diff*
 
 Default configuration: >lua
     vim.g.diffs_diff = {
-      default_layout = 'unified', -- 'unified', 'stacked', or 'split'
+      layout = 'unified', -- 'unified', 'stacked', or 'split'
       difftastic = false, -- true or { args = {} } to enable Difftastic
     }
 <
-    default_layout
+    layout
         Layout for :Diff. Default: 'unified'. See |diffs-collection-commands|
         for layout descriptions.
 
@@ -100,10 +100,31 @@ CTRL-L refreshes the current generated view from its comparison sources. :edit
 also refreshes it. Named files read disk content. Buffer comparisons retain the
 source buffer, including unsaved edits.
 
-The collection installs dp/do only when generated comparison metadata permits
-put/obtain actions. This includes eligible repository review sections. A patch
-buffer or a third-party buffer receives highlighting without these actions.
-Existing user buffer-local mappings take precedence.
+HUNK ACTIONS                                *diffs-collection-actions*
+
+Stage and unstage changes from generated unified or stacked Git comparisons.
+Both actions update the Git index and refresh the view.  Working files remain
+unchanged.
+
+dp                                          *diffs-collection-dp*
+    Stage the hunk under the cursor.  Available when comparing the index with
+    the working file: :Diff with no object, or the Unstaged section of :Review.
+
+do                                          *diffs-collection-do*
+    Unstage the hunk under the cursor.  Available when comparing a Git revision
+    with the index, including the Staged section of :Review.
+
+For example, run :Diff ++layout=unified, move to a hunk, and press dp.
+To unstage changes, run :Review ++layout=unified HEAD and press do in a staged
+hunk.
+
+In Visual mode, dp and do apply to selected lines within one hunk.  When a
+change replaces lines, select both the deleted and added lines in that group.
+
+The collection installs each mapping only when the view contains applicable
+hunks.  Existing buffer-local mappings take precedence.  Split views,
+:Diff files, and ordinary patch or third-party buffers do not receive these
+mappings.
 
 LUA API                                     *diffs-collection-api*
 
