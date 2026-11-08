@@ -13,8 +13,10 @@ Requires Neovim 0.12+ and Git. Install these repositories:
     https://github.com/barrettruth/diffs-collection.nvim
 
 Load diffs.nvim before diffs-collection.nvim. Set configuration before loading
-the plugins. Add this example to init.lua to use split repository reviews: >lua
+the plugins. This example enables all components with split repository reviews: >lua
+    vim.g.diffs_diff = {}
     vim.g.diffs_review = { layout = 'split' }
+    vim.g.diffs_conflict = {}
 
     vim.pack.add({
       'https://github.com/barrettruth/diffs.nvim',
@@ -27,13 +29,11 @@ See |vim.pack.add()| for package management. No setup() call is required.
 CONFIGURATION                               *diffs-collection-config*
                                             *diffs-collection-components*
 
-Each component is enabled by default. The tables below contain all default
-settings. Define them before |vim.pack.add()|. Configure syntax and intra-line
-highlighting separately through |g:diffs| in diffs.nvim.
+Define a component's vim.g.diffs_* table before loading the plugin to enable it.
 
 File comparisons                            *g:diffs_diff*
 
-Default configuration: >lua
+Enable with default settings: >lua
     vim.g.diffs_diff = {
       layout = 'unified', -- 'unified', 'stacked', or 'split'
       difftastic = false, -- true or { args = {} } to enable Difftastic
@@ -50,11 +50,9 @@ Default configuration: >lua
         For example: >lua
             vim.g.diffs_diff = { difftastic = { args = {} } }
 <
-Set vim.g.diffs_diff = false to disable :Diff and its plugin mappings.
-
 Repository review                           *g:diffs_review*
 
-Default configuration: >lua
+Enable with default settings: >lua
     vim.g.diffs_review = {
       layout = 'unified', -- 'unified', 'stacked', or 'split'
     }
@@ -62,15 +60,12 @@ Default configuration: >lua
     layout
         Layout for :Review. Default: 'unified'.
 
-Set vim.g.diffs_review = false to disable :Review and its plugin mappings.
-
 Conflict resolution                         *g:diffs_conflict*
 
-Default configuration: >lua
+Enable conflict handling: >lua
     vim.g.diffs_conflict = {}
 <
-The empty table enables conflict handling. There are no additional options.
-Set vim.g.diffs_conflict = false to disable automatic detection and mappings.
+There are no additional options.
 Configure keys with |vim.keymap.set()| and |diffs-collection-mappings|.
 
 COMMANDS                                    *diffs-collection-commands*
@@ -168,13 +163,5 @@ User events: DiffsConflictDetected, DiffsConflictResolved,
 DiffsConflictDetached, and DiffsMergeReady. Conflict colors use the
 DiffsConflictOurs, DiffsConflictTheirs, DiffsConflictBase, and
 DiffsConflictMarker highlight groups.
-
-DEVELOPMENT                                 *diffs-collection-development*
-
-From the collection checkout: >sh
-    nix develop -c just dev
-<
-The launcher loads diffs.nvim before diffs-collection.nvim. The Nix flake pins
-the core revision.
 
  vim:tw=78:ts=8:noet:ft=help:norl:

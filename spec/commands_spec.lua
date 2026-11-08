@@ -450,6 +450,8 @@ describe('commands', function()
     local function capture_dispatch(args, vertical)
       local saved_diff = commands.diff
       local saved_review = commands.review_command
+      local saved_config = vim.g.diffs_review
+      vim.g.diffs_review = {}
       local captured = {}
       commands.diff = function(a, v, o)
         captured.diff = { args = a, vertical = v, opts = o }
@@ -460,6 +462,7 @@ describe('commands', function()
       commands.diff_command(args, vertical)
       commands.diff = saved_diff
       commands.review_command = saved_review
+      vim.g.diffs_review = saved_config
       return captured
     end
 

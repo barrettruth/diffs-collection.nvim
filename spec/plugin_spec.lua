@@ -19,7 +19,7 @@ end
 describe('collection commands', function()
   it('compares escaped file paths through Ex and reloads changed content', function()
     child({
-      'vim.g.diffs_conflict = false',
+      'vim.g.diffs_diff = {}',
       "vim.cmd('runtime plugin/diffs-collection.lua')",
       'local dir = vim.fn.tempname()',
       "vim.fn.mkdir(dir, 'p')",
@@ -43,8 +43,7 @@ describe('collection commands', function()
 
   it('allows review without the Diff command or conflict attachment', function()
     child({
-      'vim.g.diffs_diff = false',
-      'vim.g.diffs_conflict = false',
+      'vim.g.diffs_review = {}',
       "vim.cmd('runtime plugin/diffs-collection.lua')",
       "assert(vim.fn.exists(':Diff') == 0)",
       "assert(vim.fn.exists(':Review') == 2)",

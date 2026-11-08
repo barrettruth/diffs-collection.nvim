@@ -5,11 +5,10 @@ local M = {}
 ---@return table|false
 local function component(name, defaults)
   local value = vim.g[name]
-  if value == false then
+  if type(value) ~= 'table' then
     return false
   end
-  vim.validate(name, value, 'table', true)
-  return vim.tbl_deep_extend('force', defaults, value or {})
+  return vim.tbl_deep_extend('force', defaults, value)
 end
 
 ---@return table|false

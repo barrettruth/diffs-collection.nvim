@@ -15,6 +15,3 @@ test:
 
 ci: format lint test
     @:
-
-dev:
-    nvim -u scripts/dev_init.lua
