@@ -3,6 +3,8 @@
 File comparisons, repository review, and conflict resolution for
 [diffs.nvim](https://github.com/barrettruth/diffs.nvim).
 
+<img width="863" height="752" alt="image" src="https://github.com/user-attachments/assets/fb67f1f5-e64b-4b67-88f4-2d8d37d9f9f2" />
+
 | Component | Description |
 | --- | --- |
 | [diffs-diff](#diffs-diff) | File and buffer comparisons with `:Diff` |
