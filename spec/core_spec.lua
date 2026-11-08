@@ -79,8 +79,21 @@ assert(#marks > 0, 'The first split has no intra-line highlights')
       end
     end
     assert.is_true(context)
-    local rails = vim.api.nvim_buf_get_extmarks(buf, ns.diffs_collection_rails, 0, -1, {})
-    assert.is_true(#rails > 0)
+    local backgrounds = {}
+    for _, mark in
+      ipairs(
+        vim.api.nvim_buf_get_extmarks(buf, ns.diffs_collection_rails, 0, -1, { details = true })
+      )
+    do
+      local detail = mark[4]
+      if detail.hl_group == 'DiffsAdd' or detail.hl_group == 'DiffsDelete' then
+        backgrounds[#backgrounds + 1] = { mark[2], mark[3], detail.end_col, detail.hl_group }
+      end
+    end
+    assert.are.same({
+      { 2, 0, info.prefix_width, 'DiffsDelete' },
+      { 3, 0, info.prefix_width, 'DiffsAdd' },
+    }, backgrounds)
     vim.api.nvim_buf_delete(buf, { force = true })
   end)
 end)
