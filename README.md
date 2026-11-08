@@ -3,15 +3,15 @@
 File comparisons, repository review, and conflict resolution for Neovim.
 [diffs.nvim](https://github.com/barrettruth/diffs.nvim) provides highlighting.
 
-Load **diffs.nvim before diffs-collection.nvim**. The collection requires the
-public highlighting API on diffs.nvim's `integration/collection` branch.
+Load **diffs.nvim before diffs-collection.nvim**. Until the November 30, 2026
+switchover, use diffs.nvim's `compare/nov-30-2026` branch.
 
 ```lua
 -- lazy.nvim
 {
   'barrettruth/diffs-collection.nvim',
   dependencies = {
-    { 'barrettruth/diffs.nvim', branch = 'integration/collection' },
+    { 'barrettruth/diffs.nvim', branch = 'compare/nov-30-2026' },
   },
 }
 ```
