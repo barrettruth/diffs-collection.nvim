@@ -1,21 +1,77 @@
 *diffs-collection.txt*  File comparisons, repository review, and conflicts
 *diffs-collection*
 
+diffs-collection.nvim provides :Diff file comparisons, :Review repository
+reviews, and conflict resolution. It requires diffs.nvim for syntax and
+intra-line highlighting.
+
 INSTALLATION                                *diffs-collection-installation*
 
-Install both plugins. Load diffs.nvim before diffs-collection.nvim.
-Core highlighting uses vim.g.diffs.
+Requires Neovim 0.12+ and Git. Install these repositories:
 
-COMPONENTS                                  *diffs-collection-components*
+    https://github.com/barrettruth/diffs.nvim
+    https://github.com/barrettruth/diffs-collection.nvim
 
-Components are enabled by default. Define configuration before plugin loading: >lua
-    vim.g.diffs_diff = { default_layout = 'unified', difftastic = false }
-    vim.g.diffs_review = { layout = 'unified' }
+Load diffs.nvim before diffs-collection.nvim. Set configuration before loading
+the plugins. Add this example to init.lua to use split repository reviews: >lua
+    vim.g.diffs_review = { layout = 'split' }
+
+    vim.pack.add({
+      'https://github.com/barrettruth/diffs.nvim',
+      'https://github.com/barrettruth/diffs-collection.nvim',
+    }, { load = true })
+<
+The load = true option loads the plugins immediately, in the listed order.
+See |vim.pack.add()| for package management. No setup() call is required.
+
+CONFIGURATION                               *diffs-collection-config*
+                                            *diffs-collection-components*
+
+Each component is enabled by default. The tables below contain all default
+settings. Define them before |vim.pack.add()|. Configure syntax and intra-line
+highlighting separately through |g:diffs| in diffs.nvim.
+
+File comparisons                            *g:diffs_diff*
+
+Default configuration: >lua
+    vim.g.diffs_diff = {
+      default_layout = 'unified', -- 'unified', 'stacked', or 'split'
+      difftastic = false, -- true or { args = {} } to enable Difftastic
+    }
+<
+    default_layout
+        Layout for :Diff. Default: 'unified'. See |diffs-collection-commands|
+        for layout descriptions.
+
+    difftastic
+        Structural highlighting with the external difft executable.
+        false disables it. true enables it with no extra arguments.
+        A table enables it and accepts an args list, which defaults to {}.
+        For example: >lua
+            vim.g.diffs_diff = { difftastic = { args = {} } }
+<
+Set vim.g.diffs_diff = false to disable :Diff and its plugin mappings.
+
+Repository review                           *g:diffs_review*
+
+Default configuration: >lua
+    vim.g.diffs_review = {
+      layout = 'unified', -- 'unified', 'stacked', or 'split'
+    }
+<
+    layout
+        Layout for :Review. Default: 'unified'.
+
+Set vim.g.diffs_review = false to disable :Review and its plugin mappings.
+
+Conflict resolution                         *g:diffs_conflict*
+
+Default configuration: >lua
     vim.g.diffs_conflict = {}
 <
-Set a component to false to disable it. An empty table selects its defaults.
-Disabling diffs_diff removes :Diff. Disabling diffs_review removes :Review.
-Disabling diffs_conflict prevents automatic conflict detection and mappings.
+The empty table enables conflict handling. There are no additional options.
+Set vim.g.diffs_conflict = false to disable automatic detection and mappings.
+Configure keys with |vim.keymap.set()| and |diffs-collection-mappings|.
 
 COMMANDS                                    *diffs-collection-commands*
 
@@ -37,22 +93,6 @@ the old and new content in separate panes.
     Review repository changes. A base-only review includes branch, staged,
     unstaged, and optional untracked changes. A..B compares endpoints directly.
     A...B compares B with the merge base. A B is a direct comparison.
-
-CONFIGURATION                               *diffs-collection-config*
-
-vim.g.diffs_diff.default_layout
-    Default :Diff layout: 'unified', 'stacked', or 'split'. Default: 'unified'.
-
-vim.g.diffs_diff.difftastic
-    false, true, or { args = { ... } }. Default: false. Requires an installed
-    difft executable. Structural differences use difftastic's intra-line spans.
-
-vim.g.diffs_review.layout
-    Default :Review layout: 'unified', 'stacked', or 'split'. Default: 'unified'.
-
-vim.g.diffs_conflict
-    {} enables conflict detection. false disables it. Configure conflict
-    mappings with vim.keymap.set() and the <Plug> mappings below.
 
 GENERATED VIEWS                              *diffs-collection-views*
 
