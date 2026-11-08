@@ -29,7 +29,7 @@ vim.pack.add({
 
 ## Configuration
 
-Enable plugins as follows; disable with `vim.g.diffs_<plugin> = false`.
+All plugins are enabled by default. Disable with `vim.g.diffs_<plugin> = false`.
 
 ### diffs-diff
 
