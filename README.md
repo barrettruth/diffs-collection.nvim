@@ -9,7 +9,7 @@ File comparisons, repository review, and conflict resolution for
 | [diffs-review](#diffs-review) | Repository review with `:Review` |
 | [diffs-conflict](#diffs-conflict) | Conflict highlighting and resolution |
 
-<img width="1721" height="1035" alt="image" src="https://github.com/user-attachments/assets/e12052ba-fba0-408c-bcaa-53c059f6311c" />
+<img width="1721" height="1035" alt="image" src="https://github.com/user-attachments/assets/92d0d94f-b460-4458-9f24-6c43b0bdea05" />
 
 ## Installation
 
