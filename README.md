@@ -13,10 +13,10 @@ File comparisons, repository review, and conflict resolution for
 
 ## Installation
 
-With `vim.pack` (Neovim 0.12+):
+For example, with `vim.pack` (Neovim 0.12+):
 
-**Load diffs.nvim before diffs-collection.nvim.** Set configuration before
-`vim.pack.add()`. This example opens repository reviews in split layout:
+**Load diffs.nvim before diffs-collection.nvim and specify configuration before**
+`vim.pack.add()`/your plugin manager loads the plugins. For example:
 
 ```lua
 vim.g.diffs_review = { layout = 'split' }
@@ -26,8 +26,6 @@ vim.pack.add({
   'https://github.com/barrettruth/diffs-collection.nvim',
 }, { load = true })
 ```
-
-`load = true` loads the plugins immediately, in the listed order.
 
 ## Configuration
 
