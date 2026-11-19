@@ -557,6 +557,25 @@ function M.open_source(bufnr)
 end
 
 ---@param bufnr integer
+---@param direction integer
+function M.goto_block(bufnr, direction)
+  local changed = {}
+  local count = vim.api.nvim_buf_line_count(bufnr)
+  for i = 1, count do
+    changed[i] = false
+  end
+  for _, hunk in ipairs(buffer_hunks(bufnr)) do
+    for _, line in ipairs(hunk.lines) do
+      if line.kind == 'add' or line.kind == 'delete' then
+        changed[line.lnum] = true
+      end
+    end
+  end
+  local navigation = require('diffs-collection.navigation')
+  navigation.goto_block(navigation.blocks(changed), direction)
+end
+
+---@param bufnr integer
 function M.goto_next(bufnr)
   local parsed = buffer_hunks(bufnr)
   if #parsed == 0 then
