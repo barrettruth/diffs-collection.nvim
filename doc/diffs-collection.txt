@@ -121,7 +121,7 @@ hunks.  Existing buffer-local mappings take precedence.  Split views,
 :Diff files, and ordinary patch or third-party buffers do not receive these
 mappings.
 
-In generated comparisons, ]c and [c move between Git hunks.  ]C and [C move
+In :Diff and :Review views, ]c and [c move between Git hunks.  ]C and [C move
 between adjacent groups of changed lines, including groups within one hunk.
 Both pairs wrap at the ends of the view and accept a count.
 
