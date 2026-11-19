@@ -181,12 +181,8 @@ local side_config = {
 
 ---@param source integer? diff-mapped source line number for this row
 ---@param width integer
----@param number boolean
 ---@return string
-local function rail_number(source, width, number)
-  if not number then
-    return ''
-  end
+local function rail_number(source, width)
   if not source then
     return string.rep(' ', width)
   end
@@ -195,17 +191,16 @@ end
 
 ---@param info diffs_collection.SplitPaneInfo
 ---@param lnum integer
----@param number boolean
 ---@return string
-local function rail_segment(info, lnum, number)
+local function rail_segment(info, lnum)
   local width = info.rail_width
   local row = info.rows[lnum]
   if not row or row.kind == 'filler' then
-    local pad = number and width + 2 or 2
+    local pad = width + 2
     return '%C%s%#DiffsRail#' .. string.rep(' ', pad)
   end
   local cfg = side_config[info.side]
-  local numstr = rail_number(row[cfg.lnum], width, number)
+  local numstr = rail_number(row[cfg.lnum], width)
   if row.kind == cfg.kind then
     return ('%%C%%s%%#%s#%s%%#%s#%s%%#%s# '):format(
       cfg.bar_hl,
@@ -232,8 +227,7 @@ function M.statuscolumn()
   if not info then
     return ''
   end
-  local number = vim.api.nvim_get_option_value('number', { win = win })
-  local rendered_ok, rendered = pcall(rail_segment, info, vim.v.lnum, number)
+  local rendered_ok, rendered = pcall(rail_segment, info, vim.v.lnum)
   return rendered_ok and rendered or ''
 end
 
