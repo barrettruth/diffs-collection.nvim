@@ -2,6 +2,13 @@ require('spec.helpers')
 
 describe('core and collection loading', function()
   it('loads both plugins without duplicate handlers or patch actions', function()
+    local init = vim.fn.tempname() .. '.lua'
+    vim.fn.writefile({
+      'vim.opt.runtimepath:prepend(vim.env.DIFFS_NVIM_PATH)',
+      ('vim.opt.runtimepath:prepend(%q)'):format(vim.fn.getcwd()),
+      'vim.g.diffs_diff = {}',
+      'vim.g.diffs_review = {}',
+    }, init)
     local script = vim.fn.tempname() .. '.lua'
     vim.fn.writefile({
       'local ok, err = pcall(function()',
@@ -29,11 +36,12 @@ describe('core and collection loading', function()
       vim.v.progpath,
       '--headless',
       '-u',
-      'scripts/dev_init.lua',
+      init,
       '-c',
       'luafile ' .. vim.fn.fnameescape(script),
     })
     local status = vim.v.shell_error
+    vim.fn.delete(init)
     vim.fn.delete(script)
     assert.are.equal(0, status, output)
   end)
