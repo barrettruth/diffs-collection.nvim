@@ -385,6 +385,8 @@ local function clear_owned_split_keymaps(bufnr)
   clear_owned_keymap(bufnr, '<CR>', 'Open source file')
   clear_owned_keymap(bufnr, ']c', 'Next diff hunk')
   clear_owned_keymap(bufnr, '[c', 'Previous diff hunk')
+  clear_owned_keymap(bufnr, ']C', 'Next changed block')
+  clear_owned_keymap(bufnr, '[C', 'Previous changed block')
 end
 
 ---@param bufnr integer
@@ -406,6 +408,25 @@ local function set_keymaps(bufnr)
     vim.keymap.set('n', '<CR>', function()
       M.open_source(vim.api.nvim_get_current_buf())
     end, { buffer = bufnr, desc = 'Open source file' })
+  end
+  for _, mapping in ipairs({
+    { ']C', 1, 'Next changed block' },
+    { '[C', -1, 'Previous changed block' },
+  }) do
+    if not get_buffer_keymap(bufnr, 'n', mapping[1]) then
+      vim.keymap.set('n', mapping[1], function()
+        local info = pane_info[bufnr]
+        if not info then
+          return
+        end
+        local changed = {}
+        for i, row in ipairs(info.rows) do
+          changed[i] = row.kind ~= 'context'
+        end
+        local navigation = require('diffs-collection.navigation')
+        navigation.goto_block(navigation.blocks(changed), mapping[2])
+      end, { buffer = bufnr, desc = mapping[3] })
+    end
   end
   if not get_buffer_keymap(bufnr, 'n', ']c') then
     vim.keymap.set('n', ']c', function()

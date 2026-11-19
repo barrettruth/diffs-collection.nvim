@@ -1,0 +1,21 @@
+require('spec.helpers')
+
+local navigation = require('diffs-collection.navigation')
+
+describe('changed block navigation', function()
+  it('groups adjacent changed lines and separates them at context lines', function()
+    assert.are.same({ 2, 6 }, navigation.blocks({ false, true, true, true, false, true }))
+  end)
+
+  it('moves between block starts and wraps', function()
+    vim.cmd('enew')
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, { 'a', 'b', 'c', 'd', 'e', 'f' })
+    vim.api.nvim_win_set_cursor(0, { 2, 0 })
+    navigation.goto_block({ 2, 6 }, 1)
+    assert.are.equal(6, vim.api.nvim_win_get_cursor(0)[1])
+    navigation.goto_block({ 2, 6 }, 1)
+    assert.are.equal(2, vim.api.nvim_win_get_cursor(0)[1])
+    navigation.goto_block({ 2, 6 }, -1)
+    assert.are.equal(6, vim.api.nvim_win_get_cursor(0)[1])
+  end)
+end)
