@@ -79,6 +79,37 @@ end
 if diff_enabled or review_enabled then
   local group = vim.api.nvim_create_augroup('diffs_collection_views', { clear = true })
   local window_options = {}
+  local inherited_options = {}
+  vim.api.nvim_create_autocmd('WinNew', {
+    group = group,
+    callback = function()
+      local source = vim.fn.win_getid(vim.fn.winnr('#'))
+      local saved = window_options[source]
+      if saved then
+        inherited_options[vim.api.nvim_get_current_win()] = {
+          options = saved,
+          buffer = vim.api.nvim_win_get_buf(source),
+        }
+      end
+    end,
+  })
+  vim.api.nvim_create_autocmd('BufEnter', {
+    group = group,
+    callback = function(args)
+      local win = vim.api.nvim_get_current_win()
+      local inherited = inherited_options[win]
+      if not inherited or args.buf == inherited.buffer then
+        return
+      end
+      inherited_options[win] = nil
+      if vim.api.nvim_buf_get_name(args.buf):match('^diffs://') then
+        return
+      end
+      for name, value in pairs(inherited.options) do
+        vim.api.nvim_set_option_value(name, value, { win = win, scope = 'local' })
+      end
+    end,
+  })
   vim.api.nvim_create_autocmd('BufWinEnter', {
     group = group,
     pattern = 'diffs://*',
@@ -115,6 +146,7 @@ if diff_enabled or review_enabled then
     group = group,
     callback = function(args)
       window_options[tonumber(args.match)] = nil
+      inherited_options[tonumber(args.match)] = nil
     end,
   })
   vim.api.nvim_create_autocmd('BufReadCmd', {
