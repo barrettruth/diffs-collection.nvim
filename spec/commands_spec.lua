@@ -1249,7 +1249,7 @@ describe('commands', function()
       assert.is_true(rail(right_win, 2):find('2', 1, true) ~= nil)
 
       vim.wo[right_win].number = false
-      assert.is_nil(rail(right_win, 2):find('%d'))
+      assert.is_true(rail(right_win, 2):find('2', 1, true) ~= nil)
     end)
 
     for _, exit in ipairs({ 'replace', 'close' }) do

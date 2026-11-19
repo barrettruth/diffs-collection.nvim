@@ -78,6 +78,45 @@ end
 
 if diff_enabled or review_enabled then
   local group = vim.api.nvim_create_augroup('diffs_collection_views', { clear = true })
+  local window_options = {}
+  vim.api.nvim_create_autocmd('BufWinEnter', {
+    group = group,
+    pattern = 'diffs://*',
+    callback = function(args)
+      if vim.api.nvim_buf_get_name(args.buf):match('^diffs://split:') then
+        return
+      end
+      local win = vim.api.nvim_get_current_win()
+      window_options[win] = {
+        statuscolumn = vim.wo[win].statuscolumn,
+        number = vim.wo[win].number,
+        relativenumber = vim.wo[win].relativenumber,
+      }
+      vim.wo[win].statuscolumn = ''
+      vim.wo[win].number = false
+      vim.wo[win].relativenumber = false
+    end,
+  })
+  vim.api.nvim_create_autocmd('BufWinLeave', {
+    group = group,
+    pattern = 'diffs://*',
+    callback = function()
+      local win = vim.api.nvim_get_current_win()
+      local saved = window_options[win]
+      if saved then
+        window_options[win] = nil
+        for name, value in pairs(saved) do
+          vim.api.nvim_set_option_value(name, value, { win = win, scope = 'local' })
+        end
+      end
+    end,
+  })
+  vim.api.nvim_create_autocmd('WinClosed', {
+    group = group,
+    callback = function(args)
+      window_options[tonumber(args.match)] = nil
+    end,
+  })
   vim.api.nvim_create_autocmd('BufReadCmd', {
     group = group,
     pattern = 'diffs://*',
